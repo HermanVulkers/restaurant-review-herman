@@ -1,16 +1,18 @@
 {
-  "name": "RestaurantReview",
+  "name": "restaurant-review",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios & npm run json-server",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "json-server": "json-server --watch db.json --port 3004"
   },
   "dependencies": {
     "@humanoids/prettier-config": "^0.0.4",
+    "json-server": "^0.17.0",
     "prettier": "^2.6.0",
     "react": "17.0.2",
     "react-native": "0.67.4"
