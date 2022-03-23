@@ -1,55 +1,92 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
 
-import { FlatList, StyleSheet, TextInput, View } from "react-native";
+import "react-native-gesture-handler";
 
-import { Header } from "./src/components/Header";
-import { RestaurantRow } from "./src/components/RestaurantRow";
+import { About } from "./src/components/About";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const App = () => {
-  const [search, setSearch] = useState("");
-  const [restaurants, setRestaurants] = useState([]);
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-  useEffect(() => {
-    fetch("http://localhost:3004/restaurants")
-      .then((response) => response.json())
-      .then((result) => setRestaurants(result));
-  }, []);
+import { AddReview } from "./src/components/AddReview";
+import { RestaurantInfo } from "./src/components/RestaurantInfo";
+import { RestaurantList } from "./src/components/RestaurantList";
+
+const List = () => {
+  const Stack = createNativeStackNavigator();
 
   return (
-    <View style={{ flex: 1 }}>
-      <Header />
-
-      <TextInput
-        onChangeText={(text) => {
-          setSearch(text);
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={RestaurantList}
+        options={{
+          headerShown: false,
         }}
-        placeholder="Live Search"
-        style={styles.input}
-        value={search}
       />
-
-      <FlatList
-        contentContainerStyle={{ paddingTop: 30 }}
-        data={restaurants.filter((place) => {
-          return !search || place.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
-        })}
-        renderItem={({ item, index }) => <RestaurantRow place={item} index={index} />}
-        keyExtractor={(item) => item.name}
+      <Stack.Screen
+        name="Restaurant Info"
+        component={RestaurantInfo}
+        options={{
+          headerTitle: "Restaurant Info",
+          headerStyle: {
+            backgroundColor: "#0066CC",
+          },
+          headerTintColor: "#FFFF",
+          headerTitleStyle: {
+            color: "#FFF",
+          },
+        }}
       />
-    </View>
+    </Stack.Navigator>
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    padding: 10,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    color: "#444",
-    borderBottomWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#F5F5F5",
-  },
-});
+const Tabs = () => {
+  const Tab = createBottomTabNavigator();
+
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={List}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Icon name="list" color={color} size={22} />,
+        }}
+      />
+      <Tab.Screen
+        name="About"
+        component={About}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Icon name="info-circle" color={color} size={22} />,
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+const App = () => {
+  const Modal = createNativeStackNavigator();
+
+  return (
+    <NavigationContainer>
+      <Modal.Navigator>
+        <Modal.Screen
+          name="Tabs"
+          component={Tabs}
+          options={{ presentation: "modal", headerShown: false }}
+        />
+        <Modal.Screen
+          name="AddReview"
+          component={AddReview}
+          options={{ presentation: "modal", headerShown: false }}
+        />
+      </Modal.Navigator>
+    </NavigationContainer>
+  );
+};
 
 export default App;

@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 
-import { Text, TouchableHighlight, View } from "react-native";
+import { Image, Text, TouchableHighlight, View } from "react-native";
 
-export const RestaurantRow = ({ place, index }) => {
+import { Stars } from "./Stars";
+
+export const RestaurantRow = ({ place, index, navigation }) => {
   const [showInfo, setShowInfo] = useState();
 
   const infoPressed = () => {
-    setShowInfo(!showInfo);
+    navigation.navigate("Restaurant Info", { place });
   };
 
   return (
     <View key={place.name} style={{ backgroundColor: index % 2 === 0 ? "white" : "#F3F3F7" }}>
       <View style={styles.row}>
-        <View style={styles.edges}>
-          <Text>{index + 1}</Text>
+        <View style={styles.stars}>
+          <Stars rating={place.rating} />
         </View>
 
         <View style={styles.nameAddress}>
@@ -31,6 +33,13 @@ export const RestaurantRow = ({ place, index }) => {
       {showInfo && (
         <View style={styles.info}>
           <Text>Restaurant Info</Text>
+          <Image
+            source={{
+              uri: `http://localhost:3004/images/${place.image}`,
+              width: 100,
+              height: 100,
+            }}
+          />
         </View>
       )}
     </View>
@@ -41,6 +50,14 @@ const styles = {
   row: {
     flexDirection: "row",
     padding: 5,
+  },
+  stars: {
+    flex: 1,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 5,
+    minWidth: 50,
   },
   edges: {
     alignItems: "center",
