@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@humanoids/prettier-config": "^0.0.4",
+    "@react-native-async-storage/async-storage": "^1.17.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-masked-view/masked-view": "^0.2.6",
     "@react-navigation/bottom-tabs": "^6.2.0",

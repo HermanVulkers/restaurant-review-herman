@@ -1,68 +1,102 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export const AddReview = ({ navigation }) => {
-  const [name, setName] = useState();
-  const [rating, setRating] = useState();
-  const [review, setReview] = useState();
+export const AddReview = ({ navigation, route }) => {
+  const [name, setName] = useState("");
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const place = route.params.place;
 
   const close = () => {
     navigation.goBack();
   };
 
+  useEffect(() => {
+    AsyncStorage.getItem("reviewer_name").then((name) => {
+      if (name !== null && name !== undefined) {
+        setName(name);
+      }
+    });
+  }, []);
+
   const submitReview = () => {
-    this.setState({ submitting: true });
-    fetch("http://localhost:3000/review", {
+    setSubmitting(true);
+
+    AsyncStorage.setItem("reviewer_name", name);
+
+    fetch("http://localhost:3004/reviews", {
       method: "POST",
       body: JSON.stringify({
-        name: this.state.name,
-        rating: this.state.rating,
-        comment: this.state.comment,
+        restaurantId: place.id,
+        name: name,
+        rating: rating,
+        review: review,
       }),
-    }).then((response) => response.json());
+      headers: {
+        "Content-type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        setSubmitting(false);
+        navigation.goBack();
+      });
   };
 
   return (
     <KeyboardAwareScrollView style={{ flex: 1 }}>
       <View>
         <TouchableOpacity onPress={close} style={styles.button}>
-          <Icon name="close" size={30} color="#0066CC" />
+          <Icon color="#0066CC" name="close" size={30} />
         </TouchableOpacity>
         <Text style={styles.addReview}>Add Review</Text>
 
         <TextInput
-          style={styles.input}
-          placeholder="Name (optional)"
-          value={name}
           onChangeText={(name) => setName(name)}
+          placeholder="Name (optional)"
+          style={styles.input}
+          value={name}
         />
 
         <Text style={styles.rating}>Your Rating:</Text>
         <View style={styles.stars}>
           {[1, 2, 3, 4, 5].map((i) => {
             return (
-              <TouchableOpacity onPress={() => setRating(i)} style={styles.starButton} key={i}>
-                <Icon name={"star"} color={rating >= i ? "#FFD64C" : "#CCCCCC"} size={40} />
+              <TouchableOpacity key={i} onPress={() => setRating(i)} style={styles.starButton}>
+                <Icon color={rating >= i ? "#FFD64C" : "#CCCCCC"} name={"star"} size={40} />
               </TouchableOpacity>
             );
           })}
         </View>
 
         <TextInput
-          style={[styles.input, { height: 100 }]}
-          placeholder="Review"
-          value={review}
-          onChangeText={(review) => setReview(review)}
           multiline={true}
           numberOfLines={5}
+          onChangeText={(review) => setReview(review)}
+          placeholder="Review"
+          style={[styles.input, { height: 100 }]}
+          value={review}
         />
 
-        <TouchableOpacity onPress={submitReview} style={styles.submitButton}>
+        {submitting && <ActivityIndicator size="large" color="#0066CC" />}
+
+        <TouchableOpacity disabled={submitting} onPress={submitReview} style={styles.submitButton}>
           <Text style={styles.submitButtonText}>Submit Review</Text>
         </TouchableOpacity>
       </View>
@@ -72,52 +106,52 @@ export const AddReview = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
     backgroundColor: "#fff",
+    flex: 1,
     paddingTop: 20,
   },
   button: {
     paddingHorizontal: 10,
   },
   addReview: {
-    fontSize: 25,
     color: "#444",
-    textAlign: "center",
+    fontSize: 25,
     margin: 20,
+    textAlign: "center",
   },
   input: {
-    padding: 10,
-    marginVertical: 10,
-    marginHorizontal: 20,
     borderColor: "#ccc",
-    borderWidth: 1,
     borderRadius: 3,
+    borderWidth: 1,
+    marginHorizontal: 20,
+    marginVertical: 10,
+    padding: 10,
   },
   rating: {
-    fontSize: 20,
     color: "grey",
-    textAlign: "center",
+    fontSize: 20,
     marginVertical: 40,
+    textAlign: "center",
   },
   stars: {
-    marginBottom: 80,
     flexDirection: "row",
     justifyContent: "center",
+    marginBottom: 80,
   },
   starButton: {
     padding: 5,
   },
   submitButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     backgroundColor: "#0066cc",
     borderRadius: 4,
-    marginVertical: 10,
     marginHorizontal: 20,
+    marginVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   submitButtonText: {
-    fontSize: 18,
     color: "#ffffff",
+    fontSize: 18,
     textAlign: "center",
   },
 });

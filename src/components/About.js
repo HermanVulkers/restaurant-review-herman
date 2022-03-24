@@ -25,17 +25,17 @@ export const About = () => {
 
 const styles = StyleSheet.create({
   header: {
+    fontSize: 20,
     marginVertical: 20,
     textAlign: "center",
-    fontSize: 20,
   },
   icon: {
-    marginVertical: 20,
     alignSelf: "center",
+    marginVertical: 20,
   },
   text: {
-    fontSize: 14,
     color: "#444",
+    fontSize: 14,
     marginTop: 20,
   },
 });

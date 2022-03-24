@@ -13,21 +13,21 @@ import { AddReview } from "./src/components/AddReview";
 import { RestaurantInfo } from "./src/components/RestaurantInfo";
 import { RestaurantList } from "./src/components/RestaurantList";
 
-const List = () => {
+const StackScreens = () => {
   const Stack = createNativeStackNavigator();
 
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
         component={RestaurantList}
+        name="Restaurant List"
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="Restaurant Info"
         component={RestaurantInfo}
+        name="Restaurant Info"
         options={{
           headerTitle: "Restaurant Info",
           headerStyle: {
@@ -49,16 +49,16 @@ const Tabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
+        component={StackScreens}
         name="Home"
-        component={List}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <Icon name="list" color={color} size={22} />,
         }}
       />
       <Tab.Screen
-        name="About"
         component={About}
+        name="About"
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => <Icon name="info-circle" color={color} size={22} />,
@@ -75,13 +75,13 @@ const App = () => {
     <NavigationContainer>
       <Modal.Navigator>
         <Modal.Screen
-          name="Tabs"
           component={Tabs}
+          name="Tabs"
           options={{ presentation: "modal", headerShown: false }}
         />
         <Modal.Screen
-          name="AddReview"
           component={AddReview}
+          name="AddReview"
           options={{ presentation: "modal", headerShown: false }}
         />
       </Modal.Navigator>

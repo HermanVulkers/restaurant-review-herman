@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
 
@@ -6,10 +6,17 @@ import { Stars } from "./Stars";
 
 export const RestaurantInfo = ({ navigation, route }) => {
   const place = route.params.place;
+  const [reviews, setReviews] = useState();
 
   const addReview = () => {
-    navigation.navigate("AddReview");
+    navigation.navigate("AddReview", { place });
   };
+
+  useEffect(() => {
+    fetch("http://localhost:3004/reviews")
+      .then((response) => response.json())
+      .then((result) => setReviews(result));
+  }, []);
 
   return (
     <ScrollView style={styles.root}>
@@ -31,14 +38,24 @@ export const RestaurantInfo = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
+      <View style={styles.reviews}>
+        {reviews
+          ?.filter((review) => place.id === review.restaurantId)
+          .map((review) => (
+            <View style={styles.review}>
+              <Text style={styles.reviewerName}>{review.name} reviewed:</Text>
+              <Text style={styles.reviewText}>{review.review}</Text>
+            </View>
+          ))}
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
     backgroundColor: "#fff",
+    flex: 1,
   },
   infoHeader: {
     flexDirection: "row",
@@ -54,22 +71,32 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   image: {
-    width: 100,
     height: 100,
     margin: 20,
+    width: 100,
   },
   button: {
-    borderWidth: 1,
+    backgroundColor: "#fff",
     borderColor: "#0066cc",
     borderRadius: 14,
+    borderWidth: 1,
+    marginTop: 10,
     paddingHorizontal: 10,
     paddingVertical: 3,
-    backgroundColor: "#fff",
-    marginTop: 10,
   },
   buttonText: {
     color: "#0066cc",
     fontSize: 12,
     textAlign: "center",
+  },
+  reviews: {
+    flexDirection: "column",
+    margin: 20,
+  },
+  reviewerName: {
+    fontWeight: "bold",
+  },
+  reviewText: {
+    fontStyle: "italic",
   },
 });

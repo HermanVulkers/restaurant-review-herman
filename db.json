@@ -140,5 +140,14 @@
       "image": "triangle.png",
       "rating": 2
     }
+  ],
+  "reviews": [
+    {
+      "restaurantId": 2,
+      "name": "Herman",
+      "rating": 4,
+      "review": "Mooi stekkie!",
+      "id": 6
+    }
   ]
 }

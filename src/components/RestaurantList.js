@@ -49,12 +49,12 @@ export const RestaurantList = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   input: {
-    padding: 10,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    color: "#444",
+    backgroundColor: "#F5F5F5",
     borderBottomWidth: 1,
     borderColor: "#ddd",
-    backgroundColor: "#F5F5F5",
+    color: "#444",
+    fontSize: 16,
+    padding: 10,
+    paddingHorizontal: 20,
   },
 });
